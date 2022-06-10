@@ -1,4 +1,5 @@
-﻿using JwtApp.Models;
+﻿using HotDesk.Models;
+using JwtApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,39 +15,24 @@ namespace JwtApp.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-
-        [HttpGet("Admins")]
-        [Authorize(Roles = "Administrator")]
-        public IActionResult AdminsEndpoint()
+        private IHotDeskRepository _repository;
+        public UserController(IHotDeskRepository hotDeskRepository)
         {
-            var currentUser = GetCurrentUser();
-
-            return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
+            _repository = hotDeskRepository;
         }
 
-
-        [HttpGet("Sellers")]
-        [Authorize(Roles = "Seller")]
-        public IActionResult SellersEndpoint()
+        [Authorize]
+        [HttpPatch("SetRole")]
+        public IActionResult SetRole([FromBody] string role)
         {
-            var currentUser = GetCurrentUser();
-
-            return Ok($"Hi {currentUser.GivenName}, you are a {currentUser.Role}");
-        }
-
-        [HttpGet("AdminsAndSellers")]
-        [Authorize(Roles = "Administrator,Seller")]
-        public IActionResult AdminsAndSellersEndpoint()
-        {
-            var currentUser = GetCurrentUser();
-
-            return Ok($"Hi {currentUser.GivenName}, you are an {currentUser.Role}");
-        }
-
-        [HttpGet("Public")]
-        public IActionResult Public()
-        {
-            return Ok("Hi, you're on public property");
+            var user = GetCurrentUser();
+            if (user != null)
+            {
+                user.Role = role;
+                _repository.UpdateUser(user.Username,role);
+                return Ok(user);
+            }
+            return NotFound("User not found");
         }
 
         private UserModel GetCurrentUser()
@@ -60,9 +46,6 @@ namespace JwtApp.Controllers
                 return new UserModel
                 {
                     Username = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value,
-                    EmailAddress = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
-                    GivenName = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.GivenName)?.Value,
-                    Surname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Surname)?.Value,
                     Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
                 };
             }

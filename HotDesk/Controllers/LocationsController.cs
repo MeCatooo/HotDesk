@@ -1,9 +1,12 @@
 ﻿using HotDesk.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotDesk.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class LocationsController : Controller
     {
         private IHotDeskRepository _repository;
@@ -30,12 +33,29 @@ namespace HotDesk.Controllers
         }
 
         // POST: LocationsController/Create
+        [Authorize]
         [HttpPost]
-        public ActionResult Create()
+        public ActionResult Create([FromBody] string name)
         {
-            return View();
+            if (String.IsNullOrEmpty(name))
+                return BadRequest();
+            Location location = new Location() { Name = name };
+            location = _repository.AddLocation(location);
+            return Ok(location);
         }
-
+        [Authorize]
+        [HttpPost]
+        [Route("api/[controller]/{id}/add/desk")]
+        public IActionResult AddDesk(int id,string name)
+        {
+            if (String.IsNullOrEmpty(name))
+                return BadRequest();
+            var location = _repository.GetLocation(id);
+            Desk desk = new Desk() { Name = name, Location=  location};
+            desk = _repository.AddDesk(desk);
+            _repository.BindDeskToLocation(desk.Id, id);
+            return Ok(_repository.GetLocation(id));
+        }
         //// POST: LocationsController/Create
         //[HttpPost]
         //[ValidateAntiForgeryToken]

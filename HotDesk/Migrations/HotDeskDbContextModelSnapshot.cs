@@ -64,9 +64,47 @@ namespace HotDesk.Migrations
                     b.Property<DateTime>("To")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("deskId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("locationId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("userid")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("deskId");
+
+                    b.HasIndex("locationId");
+
+                    b.HasIndex("userid");
+
                     b.ToTable("Reservations");
+                });
+
+            modelBuilder.Entity("JwtApp.Models.UserModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("HotDesk.Models.Desk", b =>
@@ -80,9 +118,41 @@ namespace HotDesk.Migrations
                     b.Navigation("Location");
                 });
 
+            modelBuilder.Entity("HotDesk.Models.Reservation", b =>
+                {
+                    b.HasOne("HotDesk.Models.Desk", "desk")
+                        .WithMany()
+                        .HasForeignKey("deskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HotDesk.Models.Location", "location")
+                        .WithMany()
+                        .HasForeignKey("locationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JwtApp.Models.UserModel", "user")
+                        .WithMany("Reservations")
+                        .HasForeignKey("userid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("desk");
+
+                    b.Navigation("location");
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("HotDesk.Models.Location", b =>
                 {
                     b.Navigation("Desks");
+                });
+
+            modelBuilder.Entity("JwtApp.Models.UserModel", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

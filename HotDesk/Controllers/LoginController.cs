@@ -1,4 +1,5 @@
-﻿using JwtApp.Models;
+﻿using HotDesk.Models;
+using JwtApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +19,11 @@ namespace JwtApp.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private IConfiguration _config;
+        private IHotDeskRepository _repository;
 
-        public LoginController(IConfiguration config)
+        public LoginController(IHotDeskRepository hotDeskRepository)
         {
-            _config = config;
+            _repository = hotDeskRepository;
         }
 
         [AllowAnonymous]
@@ -39,7 +40,26 @@ namespace JwtApp.Controllers
 
             return NotFound("User not found");
         }
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        public IActionResult Register([FromBody] UserLogin userModel)
+        {
+            var user = userModel;
 
+            if (user != null)
+            {
+                try
+                {
+                    _repository.AddUser(user);
+                    return Ok(user);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
+            }
+            return BadRequest();
+        }
         private string Generate(UserModel user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4"));
@@ -48,9 +68,6 @@ namespace JwtApp.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Username),
-                new Claim(ClaimTypes.Email, user.EmailAddress),
-                new Claim(ClaimTypes.GivenName, user.GivenName),
-                new Claim(ClaimTypes.Surname, user.Surname),
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
@@ -65,7 +82,8 @@ namespace JwtApp.Controllers
 
         private UserModel Authenticate(UserLogin userLogin)
         {
-            var currentUser = UserConstants.Users.FirstOrDefault(o => o.Username.ToLower() == userLogin.Username.ToLower() && o.Password == userLogin.Password);
+            //var currentUser = UserConstants.Users.FirstOrDefault(o => o.Username.ToLower() == userLogin.Username.ToLower() && o.Password == userLogin.Password);
+            var currentUser = _repository.GetUser(userLogin);
 
             if (currentUser != null)
             {
