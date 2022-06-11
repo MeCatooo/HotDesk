@@ -1,8 +1,10 @@
 using HotDesk.Controllers;
 using HotDesk.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace HotDeskTests
@@ -37,6 +39,16 @@ namespace HotDeskTests
             var result = controller.AddDesk(1, "NextToWindow");
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             Assert.IsNotNull(repository.GetDesk(1));
+        }
+        [TestMethod]
+        public void GetLocation()
+        {
+            var repository = GetContext();
+            var controller = new LocationsController(repository);
+            controller.Create("Kraków");
+            var result = controller.Details(1);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            Assert.AreEqual((result as OkObjectResult).Value, repository.GetLocation(1));
         }
     }
 }

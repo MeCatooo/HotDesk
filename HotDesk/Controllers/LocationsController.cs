@@ -66,15 +66,15 @@ namespace HotDesk.Controllers
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         [Route("api/[controller]/{id}/add/desk")]
-        public IActionResult AddDesk(int id,string name)
+        public IActionResult AddDesk(int locationId,string name)
         {
             if (String.IsNullOrEmpty(name))
                 return BadRequest();
-            var location = _repository.GetLocation(id);
+            var location = _repository.GetLocation(locationId);
             Desk desk = new Desk() { Name = name, Location=  location};
             desk = _repository.AddDesk(desk);
-            _repository.BindDeskToLocation(desk.Id, id);
-            return Ok(_repository.GetLocation(id));
+            _repository.BindDeskToLocation(desk.Id, locationId);
+            return Ok(_repository.GetLocation(locationId));
         }
         [Authorize(Roles = "Administrator")]
         [HttpPost]
