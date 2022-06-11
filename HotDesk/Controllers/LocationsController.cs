@@ -43,7 +43,7 @@ namespace HotDesk.Controllers
             location = _repository.AddLocation(location);
             return Ok(location);
         }
-        [Authorize]
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [Route("api/[controller]/{id}/add/desk")]
         public IActionResult AddDesk(int id,string name)
@@ -55,6 +55,17 @@ namespace HotDesk.Controllers
             desk = _repository.AddDesk(desk);
             _repository.BindDeskToLocation(desk.Id, id);
             return Ok(_repository.GetLocation(id));
+        }
+        [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        [Route("api/[controller]/{id}/remove/desk/{deskId}")]
+        public IActionResult RemoveDesk(int id,int deskId)
+        {
+            var location = _repository.GetLocation(id);
+            if (!location.Desks.Any(a => a.Id == deskId))
+                return BadRequest();
+            location.Desks.Remove(location.Desks.First(a => a.Id == deskId));
+            return Ok("Delted");
         }
         //// POST: LocationsController/Create
         //[HttpPost]

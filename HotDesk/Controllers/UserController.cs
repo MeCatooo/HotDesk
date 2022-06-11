@@ -22,7 +22,7 @@ namespace JwtApp.Controllers
         }
 
         [Authorize]
-        [HttpPatch("SetRole")]
+        [HttpPatch("/set/role")]
         public IActionResult SetRole([FromBody] string role)
         {
             var user = GetCurrentUser();
@@ -43,11 +43,12 @@ namespace JwtApp.Controllers
             {
                 var userClaims = identity.Claims;
 
-                return new UserModel
-                {
-                    Username = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value,
-                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
-                };
+                return _repository.GetUser(new UserLogin() { Username = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value });
+                //return new UserModel
+                //{
+                //    Username = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value,
+                //    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
+                //};
             }
             return null;
         }

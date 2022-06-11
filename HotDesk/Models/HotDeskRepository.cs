@@ -90,7 +90,7 @@ namespace HotDesk.Models
 
         public UserModel? GetUser(UserLogin userLogin)
         {
-            return dbContext.users.FirstOrDefault(o => o.Username.ToLower() == userLogin.Username.ToLower() && o.Password == userLogin.Password);
+            return dbContext.users.FirstOrDefault(o => o.Username.ToLower() == userLogin.Username.ToLower());
         }
 
         public void AddUser(UserLogin user)
