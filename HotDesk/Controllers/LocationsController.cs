@@ -41,7 +41,7 @@ namespace HotDesk.Controllers
             }
             return Ok(get);
         }
-        [HttpGet("{id}/ocupied")]
+        [HttpGet("{id}/free")]
         public ActionResult FreeDesks(int id,[FromBody] TimeStamps dates)
         {
             var get = ReservationLogic.OccupiedDesks(id, dates.From, dates.To, _repository);

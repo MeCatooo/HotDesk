@@ -72,16 +72,17 @@ namespace HotDesk.Controllers
 
         // GET: ReservatonsController/Edit/5
         [HttpPatch("{id}")]
-        public ActionResult Edit(int id, int Deskid)
+        public ActionResult Edit(int id, int deskId)
         {
-            var tmp = _repository.GetReservation(id);
-            var newDesk = _repository.GetDesk(Deskid);
-            if (ReferenceEquals(tmp, null) || ReferenceEquals(newDesk, null))
+            var reservation = _repository.GetReservation(id);
+            var newDesk = _repository.GetDesk(deskId);
+            if (ReferenceEquals(reservation, null) || ReferenceEquals(newDesk, null) || !reservation.location.Desks.Any(a => a.Id == deskId))
                 return NotFound();
-            //if(tmp.From -) ///todo
-            tmp.desk = newDesk;
-            _repository.UpdateReservation(tmp.Id, tmp);
-            return Ok(tmp);
+            if (!ReservationLogic.IsDeskReserved(newDesk, reservation.From, reservation.To, _repository))
+                return BadRequest("Brak wolnego biurka");
+            reservation.desk = newDesk;
+            _repository.UpdateReservation(reservation.Id, reservation);
+            return Ok(reservation);
         }
         private UserModel GetCurrentUser()
         {
