@@ -11,6 +11,7 @@ namespace JwtApp.Models
     {
         public int id { get; set; }
         public string Username { get; set; }
+        [JsonIgnore]
         public string Password { get; set; }
         public string Role { get; set; }
         [JsonIgnore]

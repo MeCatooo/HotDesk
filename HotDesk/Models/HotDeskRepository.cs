@@ -14,9 +14,17 @@ namespace HotDesk.Models
         {
             return dbContext.Reservations.Include(b => b.desk).Include(b => b.location);
         }
+        public IEnumerable<Reservation> GetAllReservationsAdmin()
+        {
+            return dbContext.Reservations.Include(b => b.desk).Include(b => b.location).Include(a=>a.user);
+        }
         public Reservation GetReservation(int id)
         {
             return dbContext.Reservations.Include(b => b.desk).Include(b => b.location).FirstOrDefault(a => a.Id == id);
+        }
+        public Reservation GetReservationAdmin(int id)
+        {
+            return dbContext.Reservations.Include(b => b.desk).Include(b => b.location).Include(a => a.user).FirstOrDefault(a => a.Id == id);
         }
         public Reservation AddReservation(Reservation reservation)
         {
@@ -123,9 +131,11 @@ namespace HotDesk.Models
     public interface IHotDeskRepository
     {
         public IEnumerable<Reservation> GetAllReservations();
+        public IEnumerable<Reservation> GetAllReservationsAdmin();
         public IEnumerable<Desk> GetAllDesks();
         public IEnumerable<Location> GetAllLocations();
         public Reservation GetReservation(int id);
+        public Reservation GetReservationAdmin(int id);
         public Desk GetDesk(int id);
         public Location GetLocation(int id);
         public UserModel GetUser(UserLogin userLogin);

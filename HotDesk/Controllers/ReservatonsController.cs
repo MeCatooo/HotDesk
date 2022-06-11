@@ -4,6 +4,7 @@ using HotDesk.Models;
 using JwtApp.Models;
 using System.Security.Claims;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotDesk.Controllers
 {
@@ -27,42 +28,44 @@ namespace HotDesk.Controllers
         [HttpGet("{id}")]
         public ActionResult Details(int id)
         {
-            var get = _repository.GetReservation(id);
+            UserModel user = GetCurrentUser();
+            Reservation get;
+            if (!ReferenceEquals(user, null) && user.Role == "Administrator")
+                get = _repository.GetReservationAdmin(id);
+            else
+                get = _repository.GetReservation(id);
             if (ReferenceEquals(get, null))
             {
                 return NotFound();
             }
-            return Ok();
+            return Ok(get);
         }
 
-        // GET: ReservatonsController/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
-
         // POST: ReservatonsController/Create
+        [Authorize]
         [HttpPost("/location/{id}/desk/{deskId}")]
-        public ActionResult Create(int id, int deskId)
+        public ActionResult Create(int id, int deskId, [FromBody] TimeStamps data)
         {
-            DateTime from = new DateTime(2023, 1, 1);
-            DateTime to = new DateTime(2023, 1, 2);
+            DateTime from = data.From.Date;
+            DateTime to = data.To.Date;
+            if (from.Subtract(to) > new TimeSpan(168, 0, 0)) //7 * 24 = 168
+                return BadRequest("Reservation can't be longer than 7 days");
             if (from <= DateTime.Now && from <= DateTime.Now && from >= to)
                 return BadRequest();
             Desk desk = _repository.GetDesk(deskId);
             Location location = _repository.GetLocation(id);
-            if (ReferenceEquals(desk, null) || ReferenceEquals(location, null) || !location.Desks.Any(a=>a.Id==deskId))
+            if (ReferenceEquals(desk, null) || ReferenceEquals(location, null) || !location.Desks.Any(a => a.Id == deskId))
                 return BadRequest();
-            if (!ResrvationLogic.IsDeskReserved(desk, from, to, _repository))
+            if (!ReservationLogic.IsDeskReserved(desk, from, to, _repository))
                 return BadRequest("Brak wolnego biurka");
             Reservation reservation = _repository.AddReservation(new Reservation()
             {
-                user =GetCurrentUser(),
+                user = GetCurrentUser(),
                 desk = desk,
                 location = location,
                 From = from,
                 To = to
-            });;
+            });
             return Ok(reservation);
 
         }
@@ -80,48 +83,11 @@ namespace HotDesk.Controllers
             _repository.UpdateReservation(tmp.Id, tmp);
             return Ok(tmp);
         }
-
-        // POST: ReservatonsController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        // GET: ReservatonsController/Delete/5
-        //[HttpDelete("{id}")]
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: ReservatonsController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
         private UserModel GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-            if (identity != null)
+            if (identity.Claims.Count() != 0)
             {
                 var userClaims = identity.Claims;
 

@@ -31,6 +31,26 @@ namespace HotDesk.Controllers
             }
             return Ok(get);
         }
+        [HttpGet("{id}/ocupied")]
+        public ActionResult OcupiedDesks(int id,[FromBody] TimeStamps dates)
+        {
+            var get = ReservationLogic.OccupiedDesks(id, dates.From, dates.To, _repository);
+            if (ReferenceEquals(get, null))
+            {
+                return NotFound();
+            }
+            return Ok(get);
+        }
+        [HttpGet("{id}/ocupied")]
+        public ActionResult FreeDesks(int id,[FromBody] TimeStamps dates)
+        {
+            var get = ReservationLogic.OccupiedDesks(id, dates.From, dates.To, _repository);
+            if (ReferenceEquals(get, null))
+            {
+                return NotFound();
+            }
+            return Ok(get);
+        }
 
         // POST: LocationsController/Create
         [Authorize]
