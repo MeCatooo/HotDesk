@@ -19,22 +19,25 @@ Additional functionality:
 
 Login:
 
--Register - POST api/Login/Register
--Login, generates Bearer token - POST api/Login
+- Register - POST api/Login/Register
+- Login, generates Bearer token - POST api/Login
 
 User:
 
--Set user role (Administrator or User) - PATCH api/User/set/role
+- Set user role (Administrator or User) - PATCH api/User/set/role
 
 Technologies used in project:
 
--EF core and SQlite for storage and easy setup.
--JWToken for authorization.
--Swagger for easy api testing.
--EF InMemory for unit tests.
+- EF core and SQlite for storage and easy setup.
+- JWToken for authorization.
+- Swagger for easy api testing.
+- EF InMemory for unit tests.
 
 Setup:
 
--Launch clonned project.
+- Launch clonned project.
 
+My other similar project:
 
+- https://github.com/MeCatooo/Projekt-ASP - WebApp created in ASP.NET MVC
+- https://github.com/MeCatooo/Adam-Turek-pab/tree/main/Projekt_zaliczeniowyV2 - Restaurant API in Noje.js (type-script)
