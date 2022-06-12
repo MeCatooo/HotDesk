@@ -58,7 +58,7 @@ namespace HotDeskTests
             var location = repository.AddLocation(new Location() { Name = "Kraków" });
             var desk = repository.AddDesk(new Desk() { Name = "1", Location = location });
             var desk1 = repository.AddDesk(new Desk() { Name = "1", Location = location });
-            var user = repository.AddUser(new UserLogin() { Username = "Alex", Password = "Kowalski" });
+            var user = repository.AddUser(new UserLogin() { Username = "Alex1", Password = "Kowalski" });
             var reservation = repository.AddReservation(new Reservation() { From = new DateTime(2023, 1, 1), To = new DateTime(2023, 1, 4), Desk = desk, Location = location, User = user });
             var result = ReservationLogic.FreeDesks(location.Id ,new DateTime(2023, 1, 1), new DateTime(2023, 1, 2), repository);
             Assert.IsFalse(result.Any(a=>a.Id==desk.Id));

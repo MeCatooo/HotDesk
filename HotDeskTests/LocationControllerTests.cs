@@ -76,5 +76,38 @@ namespace HotDeskTests
             var result = controller.Details(777);
             Assert.IsInstanceOfType(result, typeof(NotFoundResult));
         }
+        [TestMethod]
+        public void ChangeDeskStateTest()
+        {
+            var repository = GetContext();
+            var controller = new LocationsController(repository);
+            controller.Create("Kraków");
+            controller.AddDesk(1, "NextToWindow");
+            var result = controller.ChangeStateDesk(1, true) as OkResult;
+            var found = repository.GetDesk(1);
+            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.AreEqual(found.Unavailable, true);
+        }
+        [TestMethod]
+        public void RemoveLocationTest()
+        {
+            var repository = GetContext();
+            var location = repository.AddLocation(new Location() { Name = "ToDelete" });
+            var controller = new LocationsController(repository);
+            var result = controller.RemoveLocation(location.Id);
+            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.IsNull(repository.GetLocation(location.Id));
+        }
+        [TestMethod]
+        public void RemoveNotEmptyLocationTest()
+        {
+            var repository = GetContext();
+            var location = repository.AddLocation(new Location() { Name = "ToDelete" });
+            var desk = repository.AddDesk(new Desk() { Name = "1", Location = location });
+            var controller = new LocationsController(repository);
+            var result = controller.RemoveLocation(location.Id);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.IsNotNull(repository.GetLocation(location.Id));
+        }
     }
 }
