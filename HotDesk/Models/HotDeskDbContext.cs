@@ -7,7 +7,7 @@ namespace HotDesk.Models
     {
         public HotDeskDbContext(DbContextOptions<HotDeskDbContext> options) : base(options)
         {
-            
+
         }
 
         public DbSet<Desk> Desks { get; set; }

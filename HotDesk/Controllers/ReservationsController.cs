@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using HotDesk.Models;
+﻿using HotDesk.Models;
 using JwtApp.Models;
-using System.Security.Claims;
-using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HotDesk.Controllers
 {
@@ -89,7 +87,7 @@ namespace HotDesk.Controllers
         {
             _repository.RemoveReservation(id);
             return Ok();
-            
+
         }
         private UserModel GetCurrentUser()
         {

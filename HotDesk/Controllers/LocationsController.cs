@@ -1,6 +1,5 @@
 ﻿using HotDesk.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotDesk.Controllers
@@ -66,7 +65,7 @@ namespace HotDesk.Controllers
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         [Route("{locationId}/add/desk")]
-        public IActionResult AddDesk(int locationId, string name)
+        public ActionResult AddDesk(int locationId, string name)
         {
             if (String.IsNullOrEmpty(name))
                 return BadRequest();
@@ -79,10 +78,10 @@ namespace HotDesk.Controllers
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         [Route("remove/desk/{deskId}")]
-        public IActionResult RemoveDesk(int deskId)
+        public ActionResult RemoveDesk(int deskId)
         {
             var desk = _repository.GetDesk(deskId);
-            if (!_repository.GetAllReservations().Any(a => a.Id == deskId))
+            if (_repository.GetAllReservations().Any(a => a.Id == deskId))
                 return BadRequest();
             _repository.RemoveDesk(deskId);
             return Ok();
@@ -90,10 +89,10 @@ namespace HotDesk.Controllers
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         [Route("update/desk/{deskId}")]
-        public IActionResult ChangeStateDesk(int deskId, [FromBody] bool state)
+        public ActionResult ChangeStateDesk(int deskId, [FromBody] bool state)
         {
             var desk = _repository.GetDesk(deskId);
-            if (!_repository.GetAllReservations().Any(a => a.Id == deskId))
+            if (_repository.GetAllReservations().Any(a => a.Id == deskId))
                 return BadRequest("First remove all reservations from desk");
             _repository.UpdateDeskAvaibality(deskId, state);
             return Ok();
@@ -101,10 +100,10 @@ namespace HotDesk.Controllers
         [Authorize(Roles = "Administrator")]
         [HttpDelete]
         [Route("remove/{id}")]
-        public IActionResult RemoveLocation(int id)
+        public ActionResult RemoveLocation(int id)
         {
             var location = _repository.GetLocation(id);
-            if(location.Desks.Count>0)
+            if (location.Desks.Count > 0)
                 return BadRequest("First remove all desks from location");
             _repository.RemoveLocation(id);
             return Ok();

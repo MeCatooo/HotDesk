@@ -1,13 +1,8 @@
 ﻿using HotDesk.Models;
 using JwtApp.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace JwtApp.Controllers
 {
@@ -29,7 +24,7 @@ namespace JwtApp.Controllers
             if (user != null)
             {
                 user.Role = role;
-                _repository.UpdateUser(user.Username,role);
+                _repository.UpdateUser(user.Username, role);
                 return Ok(user);
             }
             return NotFound("User not found");

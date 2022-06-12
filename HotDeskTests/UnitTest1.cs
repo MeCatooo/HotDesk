@@ -1,11 +1,8 @@
 using HotDesk.Controllers;
 using HotDesk.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
 
 namespace HotDeskTests
 {
@@ -26,29 +23,58 @@ namespace HotDeskTests
         {
             var repository = GetContext();
             var controller = new LocationsController(repository);
-            var result = controller.Create("Kraków");
+            var result = controller.Create("Kraków") as OkObjectResult;
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            Assert.AreEqual((result as OkObjectResult).Value, repository.GetLocation(1));
+            Assert.AreEqual(result.Value, repository.GetLocation((result.Value as Location).Id));
         }
         [TestMethod]
-        public void AddDeskToLocation()
+        public void AddDeskToLocationTest()
         {
             var repository = GetContext();
             var controller = new LocationsController(repository);
             controller.Create("Kraków");
-            var result = controller.AddDesk(1, "NextToWindow");
+            var result = controller.AddDesk(1, "NextToWindow") as OkObjectResult;
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            Assert.IsNotNull(repository.GetDesk(1));
+            Assert.IsNotNull(repository.GetDesk((result.Value as Location).Id));
         }
         [TestMethod]
-        public void GetLocation()
+        public void RemoveDeskFromLocationTest()
         {
             var repository = GetContext();
             var controller = new LocationsController(repository);
             controller.Create("Kraków");
-            var result = controller.Details(1);
+            controller.AddDesk(1, "NextToWindow");
+            var result = controller.RemoveDesk(1) as OkResult;
+            var found = repository.GetDesk(1);
+            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.IsNull(found);
+        }
+        [TestMethod]
+        public void GetLocationTest()
+        {
+            var repository = GetContext();
+            var controller = new LocationsController(repository);
+            controller.Create("Kraków");
+            var result = controller.Details(1) as OkObjectResult;
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            Assert.AreEqual((result as OkObjectResult).Value, repository.GetLocation(1));
+            Assert.AreEqual(result.Value, repository.GetLocation((result.Value as Location).Id));
+        }
+        [TestMethod]
+        public void GetAllLocationTest()
+        {
+            var repository = GetContext();
+            var controller = new LocationsController(repository);
+            var result = controller.Index() as OkObjectResult;
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+        }
+        [TestMethod]
+        public void GetLocationWrongTest()
+        {
+            var repository = GetContext();
+            var controller = new LocationsController(repository);
+            controller.Create("Kraków");
+            var result = controller.Details(777);
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
         }
     }
 }

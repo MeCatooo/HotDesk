@@ -69,16 +69,19 @@ namespace HotDesk.Models
         public void RemoveDesk(int id)
         {
             dbContext.Desks.Remove(dbContext.Desks.FirstOrDefault(a => a.Id == id));
+            dbContext.SaveChanges();
         }
 
         public void RemoveLocation(int id)
         {
             dbContext.Locations.Remove(dbContext.Locations.FirstOrDefault(a => a.Id == id));
+            dbContext.SaveChanges();
         }
 
         public void RemoveReservation(int id)
         {
             dbContext.Reservations.Remove(dbContext.Reservations.FirstOrDefault(a => a.Id == id));
+            dbContext.SaveChanges();
         }
 
         public Desk UpdateDeskName(int id, string name)

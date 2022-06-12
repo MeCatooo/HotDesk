@@ -5,10 +5,10 @@
         private static List<Reservation> _reservations = new List<Reservation>();
         private static List<Location> _locations = new List<Location>();
         private static List<Desk> _desks = new List<Desk>();
-        
+
         public void AddReservation(Reservation reservation)
         {
-            if (ReferenceEquals(null,reservation))
+            if (ReferenceEquals(null, reservation))
             {
                 throw new ArgumentNullException(nameof(reservation));
             }
@@ -36,7 +36,7 @@
         }
         public Reservation GetReservation(int id)
         {
-            if (_reservations.ElementAtOrDefault(id) !=null)
+            if (_reservations.ElementAtOrDefault(id) != null)
             {
                 return _reservations[id];
             }
@@ -78,6 +78,6 @@
             _reservations[id] = reservation;
             return reservation;
         }
-        
+
     }
 }

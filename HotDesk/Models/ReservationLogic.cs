@@ -24,7 +24,7 @@
             }
 
         }
-        public static List<Desk> FreeDesks(int locationId,DateTime startTime, DateTime endTime, IHotDeskRepository context)
+        public static List<Desk> FreeDesks(int locationId, DateTime startTime, DateTime endTime, IHotDeskRepository context)
         {
             HashSet<Desk> occupied = new HashSet<Desk>();
             foreach (Reservation reservation in context.GetAllReservations())
@@ -54,7 +54,7 @@
                 }
             }
             Location location = context.GetLocation(locationId);
-            if(ReferenceEquals(location,null))
+            if (ReferenceEquals(location, null))
             {
                 return null;
             }
