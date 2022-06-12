@@ -37,6 +37,10 @@ Setup:
 
 - Launch clonned project.
 
+Using:
+
+There is already some data in database which you can easily use call using Swagger. Some od the calls require you to be authorized, there are already 2 users in database for testing. Username: "admin", Password: "admin" as Administrator and normal user Login: "login", Password: "pass".
+
 My other similar project:
 
 - https://github.com/MeCatooo/Projekt-ASP - WebApp created in ASP.NET MVC
