@@ -30,7 +30,17 @@ namespace HotDesk.Controllers
             }
             return Ok(get);
         }
-        [HttpGet("{id}/ocupied")]
+        [HttpGet("{id}/desks")]
+        public ActionResult GetDesks(int id)
+        {
+            var get = _repository.GetLocation(id);
+            if (ReferenceEquals(get, null))
+            {
+                return NotFound();
+            }
+            return Ok(get.Desks);
+        }
+        [HttpGet("{id}/occupied")]
         public ActionResult OcupiedDesks(int id, [FromBody] TimeStamps dates)
         {
             var get = ReservationLogic.OccupiedDesks(id, dates.From, dates.To, _repository);
@@ -64,7 +74,7 @@ namespace HotDesk.Controllers
         }
         [Authorize(Roles = "Administrator")]
         [HttpPost]
-        [Route("{locationId}/add/desk")]
+        [Route("{locationId}/desk")]
         public ActionResult AddDesk(int locationId, string name)
         {
             if (String.IsNullOrEmpty(name))
@@ -76,8 +86,8 @@ namespace HotDesk.Controllers
             return Ok(_repository.GetLocation(locationId));
         }
         [Authorize(Roles = "Administrator")]
-        [HttpPost]
-        [Route("remove/desk/{deskId}")]
+        [HttpDelete]
+        [Route("desk/{deskId}")]
         public ActionResult RemoveDesk(int deskId)
         {
             var desk = _repository.GetDesk(deskId);
@@ -87,8 +97,8 @@ namespace HotDesk.Controllers
             return Ok();
         }
         [Authorize(Roles = "Administrator")]
-        [HttpPost]
-        [Route("update/desk/{deskId}")]
+        [HttpPatch]
+        [Route("desk/state/{deskId}")]
         public ActionResult ChangeStateDesk(int deskId, [FromBody] bool state)
         {
             var desk = _repository.GetDesk(deskId);
@@ -99,7 +109,7 @@ namespace HotDesk.Controllers
         }
         [Authorize(Roles = "Administrator")]
         [HttpDelete]
-        [Route("remove/{id}")]
+        [Route("{id}")]
         public ActionResult RemoveLocation(int id)
         {
             var location = _repository.GetLocation(id);

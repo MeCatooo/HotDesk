@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HotDeskTests
 {
     [TestClass]
-    public class UnitTest1
+    public class LocationControllerTests
     {
         private HotDeskRepository GetContext()
         {

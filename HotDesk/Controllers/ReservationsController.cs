@@ -38,6 +38,17 @@ namespace HotDesk.Controllers
             }
             return Ok(get);
         }
+        [HttpGet("location/{id}")]
+        public ActionResult GetReservationsInLocation(int id)
+        {
+            UserModel user = GetCurrentUser();
+            List<Reservation> get = new List<Reservation>();
+            if (!ReferenceEquals(user, null) && user.Role == "Administrator")
+                get = _repository.GetAllReservationsAdmin().Where(a=>a.location.Id==id).ToList();
+            else
+                get = _repository.GetAllReservations().Where(a => a.location.Id == id).ToList();
+            return Ok(get);
+        }
 
         // POST: ReservatonsController/Create
         [Authorize]
