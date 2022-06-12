@@ -9,9 +9,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HotDeskTests
 {
@@ -37,11 +34,11 @@ namespace HotDeskTests
             var desk = repository.AddDesk(new Desk() { Name = "1", Location = location });
             var user = repository.AddUser(new UserLogin() { Username = "Alex", Password = "Kowalski" });
             var reservation = repository.AddReservation(new Reservation() { From = new DateTime(2023, 1, 1), To = new DateTime(2023, 1, 4), Desk = desk, Location = location, User = user });
-            
+
             controller.ControllerContext = new ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             controller.ControllerContext.HttpContext.Request.Headers.Authorization = "Bearer " + controllerLogin.Login(new UserLogin() { Username = "Alex", Password = "Kowalski" });
-            
+
             var result = controller.Details(1);
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             Assert.IsNotNull((result as OkObjectResult).Value);
@@ -65,11 +62,11 @@ namespace HotDeskTests
             controller.ControllerContext = new ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             controller.ControllerContext.HttpContext.Request.Headers.Authorization = "Bearer " + controllerLogin.Login(new UserLogin() { Username = "AdminTest", Password = "Kowalski" });
-            
-            var result = controller.Index() as OkObjectResult; 
 
-            
-            Assert.IsNotNull((result.Value as IEnumerable<Reservation>).All(a=> ReferenceEquals(a.Desk,null)));
+            var result = controller.Index() as OkObjectResult;
+
+
+            Assert.IsNotNull((result.Value as IEnumerable<Reservation>).All(a => ReferenceEquals(a.Desk, null)));
         }
 
         [TestMethod]
@@ -108,7 +105,7 @@ namespace HotDeskTests
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             result = controller.Create(location.Id, desk.Id, new TimeStamps() { From = new DateTime(2023, 1, 3), To = new DateTime(2023, 1, 6) });
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
-            result = controller.Create(location.Id, desk.Id, new TimeStamps() { From = new DateTime(2022, 12, 30), To = new DateTime(2023, 1, 6)});
+            result = controller.Create(location.Id, desk.Id, new TimeStamps() { From = new DateTime(2022, 12, 30), To = new DateTime(2023, 1, 6) });
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
         }
         [TestMethod]

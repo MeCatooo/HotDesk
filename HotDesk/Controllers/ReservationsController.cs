@@ -44,7 +44,7 @@ namespace HotDesk.Controllers
             UserModel user = GetCurrentUser();
             List<Reservation> get = new List<Reservation>();
             if (!ReferenceEquals(user, null) && user.Role == "Administrator")
-                get = _repository.GetAllReservationsAdmin().Where(a=>a.Location.Id==id).ToList();
+                get = _repository.GetAllReservationsAdmin().Where(a => a.Location.Id == id).ToList();
             else
                 get = _repository.GetAllReservations().Where(a => a.Location.Id == id).ToList();
             return Ok(get);
