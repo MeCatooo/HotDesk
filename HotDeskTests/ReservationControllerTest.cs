@@ -36,7 +36,7 @@ namespace HotDeskTests
             Assert.IsNotNull(result.Value);
         }
 
-        [TestMethod]
+        //[TestMethod]
         //public void AddReservationFree()
         //{
         //    var repository = GetContext();
