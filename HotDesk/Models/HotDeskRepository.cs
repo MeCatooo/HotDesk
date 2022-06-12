@@ -78,22 +78,38 @@ namespace HotDesk.Models
 
         public void RemoveReservation(int id)
         {
-            throw new NotImplementedException();
+            dbContext.Reservations.Remove(dbContext.Reservations.FirstOrDefault(a => a.Id == id));
         }
 
-        public Desk UpdateDesk(int id, Desk desk)
+        public Desk UpdateDeskName(int id, string name)
         {
-            throw new NotImplementedException();
+            var deskFound = dbContext.Desks.Find(id);
+            if (ReferenceEquals(deskFound, null))
+                throw new ArgumentException();
+            deskFound.Name = name;
+            dbContext.SaveChanges();
+            return deskFound;
         }
 
-        public Location UpdateLocation(int id, Location location)
+        public Location UpdateLocationName(int id, string name)
         {
-            throw new NotImplementedException();
+            var locationFound = dbContext.Locations.Find(id);
+            if(ReferenceEquals(locationFound,null))
+                throw new ArgumentException();
+            locationFound.Name = name;
+            dbContext.SaveChanges();
+            return locationFound;
         }
 
-        public Reservation UpdateReservation(int id, Reservation reservation)
+        public Reservation UpdateReservationDesk(int id, int deskId)
         {
-            throw new NotImplementedException();
+            var reservationFound = dbContext.Reservations.Find(id);
+            var deskFound = dbContext.Desks.Find(deskId);
+            if (ReferenceEquals(reservationFound, null) || ReferenceEquals(deskFound, null))
+                throw new ArgumentException();
+            reservationFound.desk = deskFound;
+            dbContext.SaveChanges();
+            return reservationFound;
         }
 
         public UserModel? GetUser(UserLogin userLogin)
@@ -146,9 +162,9 @@ namespace HotDesk.Models
         public void RemoveDesk(int id);
         public void RemoveLocation(int id);
         public void RemoveReservation(int id);
-        public Desk UpdateDesk(int id, Desk desk);
-        public Location UpdateLocation(int id, Location location);
-        public Reservation UpdateReservation(int id, Reservation reservation);
+        public Desk UpdateDeskName(int id, string name);
+        public Location UpdateLocationName(int id, string name);
+        public Reservation UpdateReservationDesk(int id, int deskId);
         public UserModel UpdateUser(string username, string role);
         public Location BindDeskToLocation(int deskId, int locationId);
     }

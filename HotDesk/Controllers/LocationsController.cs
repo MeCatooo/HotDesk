@@ -32,7 +32,7 @@ namespace HotDesk.Controllers
             return Ok(get);
         }
         [HttpGet("{id}/ocupied")]
-        public ActionResult OcupiedDesks(int id,[FromBody] TimeStamps dates)
+        public ActionResult OcupiedDesks(int id, [FromBody] TimeStamps dates)
         {
             var get = ReservationLogic.OccupiedDesks(id, dates.From, dates.To, _repository);
             if (ReferenceEquals(get, null))
@@ -42,7 +42,7 @@ namespace HotDesk.Controllers
             return Ok(get);
         }
         [HttpGet("{id}/free")]
-        public ActionResult FreeDesks(int id,[FromBody] TimeStamps dates)
+        public ActionResult FreeDesks(int id, [FromBody] TimeStamps dates)
         {
             var get = ReservationLogic.OccupiedDesks(id, dates.From, dates.To, _repository);
             if (ReferenceEquals(get, null))
@@ -65,83 +65,38 @@ namespace HotDesk.Controllers
         }
         [Authorize(Roles = "Administrator")]
         [HttpPost]
-        [Route("api/[controller]/{id}/add/desk")]
-        public IActionResult AddDesk(int locationId,string name)
+        [Route("/{id}/add/desk")]
+        public IActionResult AddDesk(int locationId, string name)
         {
             if (String.IsNullOrEmpty(name))
                 return BadRequest();
             var location = _repository.GetLocation(locationId);
-            Desk desk = new Desk() { Name = name, Location=  location};
+            Desk desk = new Desk() { Name = name, Location = location };
             desk = _repository.AddDesk(desk);
             _repository.BindDeskToLocation(desk.Id, locationId);
             return Ok(_repository.GetLocation(locationId));
         }
         [Authorize(Roles = "Administrator")]
         [HttpPost]
-        [Route("api/[controller]/{id}/remove/desk/{deskId}")]
-        public IActionResult RemoveDesk(int id,int deskId)
+        [Route("/{id}/remove/desk/{deskId}")]
+        public IActionResult RemoveDesk(int id, int deskId)
+        {
+            var desk = _repository.GetDesk(id);
+            if (!_repository.GetAllReservations().Any(a => a.Id == deskId))
+                return BadRequest();
+            _repository.RemoveDesk(deskId);
+            return Ok();
+        }
+        [Authorize(Roles = "Administrator")]
+        [HttpDelete]
+        [Route("/remove/{id}")]
+        public IActionResult RemoveLocation(int id)
         {
             var location = _repository.GetLocation(id);
-            if (!location.Desks.Any(a => a.Id == deskId))
-                return BadRequest();
-            location.Desks.Remove(location.Desks.First(a => a.Id == deskId));
-            return Ok("Delted");
+            if(location.Desks.Count>0)
+                return BadRequest("First remove all desks from location");
+            _repository.RemoveLocation(id);
+            return Ok();
         }
-        //// POST: LocationsController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        //// GET: LocationsController/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: LocationsController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        //// GET: LocationsController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: LocationsController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
     }
 }

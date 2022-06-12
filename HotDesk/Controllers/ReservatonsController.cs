@@ -57,7 +57,7 @@ namespace HotDesk.Controllers
             if (ReferenceEquals(desk, null) || ReferenceEquals(location, null) || !location.Desks.Any(a => a.Id == deskId))
                 return BadRequest();
             if (!ReservationLogic.IsDeskReserved(desk, from, to, _repository))
-                return BadRequest("Brak wolnego biurka");
+                return BadRequest("No free desk");
             Reservation reservation = _repository.AddReservation(new Reservation()
             {
                 user = GetCurrentUser(),
@@ -79,9 +79,8 @@ namespace HotDesk.Controllers
             if (ReferenceEquals(reservation, null) || ReferenceEquals(newDesk, null) || !reservation.location.Desks.Any(a => a.Id == deskId))
                 return NotFound();
             if (!ReservationLogic.IsDeskReserved(newDesk, reservation.From, reservation.To, _repository))
-                return BadRequest("Brak wolnego biurka");
-            reservation.desk = newDesk;
-            _repository.UpdateReservation(reservation.Id, reservation);
+                return BadRequest("No free desk");
+            _repository.UpdateReservationDesk(reservation.Id, newDesk.Id);
             return Ok(reservation);
         }
         private UserModel GetCurrentUser()
