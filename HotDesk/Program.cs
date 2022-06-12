@@ -39,7 +39,7 @@ builder.Services.AddSwaggerGen(setup =>
         { jwtSecurityScheme, Array.Empty<string>() }
     });
 });
-builder.Services.AddDbContext<HotDeskDbContext>(options => options.UseSqlite("Filename=HotDeskDbContext.db"));
+builder.Services.AddDbContext<HotDeskDbContext>(options => options.UseSqlite("Filename=Data/HotDeskDbContext.db"));
 builder.Services.AddScoped<IHotDeskRepository, HotDeskRepository>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

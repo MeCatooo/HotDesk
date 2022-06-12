@@ -44,9 +44,9 @@ namespace HotDesk.Controllers
             UserModel user = GetCurrentUser();
             List<Reservation> get = new List<Reservation>();
             if (!ReferenceEquals(user, null) && user.Role == "Administrator")
-                get = _repository.GetAllReservationsAdmin().Where(a=>a.location.Id==id).ToList();
+                get = _repository.GetAllReservationsAdmin().Where(a=>a.Location.Id==id).ToList();
             else
-                get = _repository.GetAllReservations().Where(a => a.location.Id == id).ToList();
+                get = _repository.GetAllReservations().Where(a => a.Location.Id == id).ToList();
             return Ok(get);
         }
 
@@ -69,9 +69,9 @@ namespace HotDesk.Controllers
                 return BadRequest("No free desk");
             Reservation reservation = _repository.AddReservation(new Reservation()
             {
-                user = GetCurrentUser(),
-                desk = desk,
-                location = location,
+                User = GetCurrentUser(),
+                Desk = desk,
+                Location = location,
                 From = from,
                 To = to
             });
@@ -85,7 +85,7 @@ namespace HotDesk.Controllers
         {
             var reservation = _repository.GetReservation(id);
             var newDesk = _repository.GetDesk(deskId);
-            if (ReferenceEquals(reservation, null) || ReferenceEquals(newDesk, null) || !reservation.location.Desks.Any(a => a.Id == deskId))
+            if (ReferenceEquals(reservation, null) || ReferenceEquals(newDesk, null) || !reservation.Location.Desks.Any(a => a.Id == deskId))
                 return NotFound();
             if (!ReservationLogic.IsDeskReserved(newDesk, reservation.From, reservation.To, _repository))
                 return BadRequest("No free desk");

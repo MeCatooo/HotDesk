@@ -50,7 +50,7 @@ namespace HotDeskTests
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             controller.ControllerContext.HttpContext.Request.Headers.Authorization = "Bearer " + controllerLogin.Login(new UserLogin() { Username = "login", Password = "123" });
             var result = controller.Create(location.Id, desk.Id, new TimeStamps() { From = new DateTime(2023, 1, 1), To = new DateTime(2023, 1, 3) }) as OkObjectResult;
-            Assert.IsTrue((result.Value as Reservation).desk.Name == "NextToWindow");
+            Assert.IsTrue((result.Value as Reservation).Desk.Name == "NextToWindow");
         }
         [TestMethod]
         public void AddReservationFree_OccupiedTest()
@@ -62,7 +62,7 @@ namespace HotDeskTests
 
             var location = repository.AddLocation(new Location() { Name = "Kraków" });
             var desk = repository.AddDesk(new Desk() { Name = "NextToWindow", Location = location });
-            var reservation = repository.AddReservation(new Reservation() { From = new DateTime(2023, 1, 1), To = new DateTime(2023, 1, 4), desk = desk, location = location, user = user });
+            var reservation = repository.AddReservation(new Reservation() { From = new DateTime(2023, 1, 1), To = new DateTime(2023, 1, 4), Desk = desk, Location = location, User = user });
             controller.ControllerContext = new ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             controller.ControllerContext.HttpContext.Request.Headers.Authorization = "Bearer " + controllerLogin.Login(new UserLogin() { Username = user.Username, Password = user.Password });
@@ -79,10 +79,10 @@ namespace HotDeskTests
             var location = repository.AddLocation(new Location() { Name = "Kraków" });
             var desk = repository.AddDesk(new Desk() { Name = "NextToWindow", Location = location });
             var desk1 = repository.AddDesk(new Desk() { Name = "NextToWindow1", Location = location });
-            var reservation = repository.AddReservation(new Reservation() { From = new DateTime(2023, 1, 1), To = new DateTime(2023, 1, 4), desk = desk, location = location, user = user });
+            var reservation = repository.AddReservation(new Reservation() { From = new DateTime(2023, 1, 1), To = new DateTime(2023, 1, 4), Desk = desk, Location = location, User = user });
             var result = controller.Edit(reservation.Id, desk1.Id) as OkObjectResult;
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            Assert.IsTrue((result.Value as Reservation).desk.Name == "NextToWindow1");
+            Assert.IsTrue((result.Value as Reservation).Desk.Name == "NextToWindow1");
         }
     }
 }

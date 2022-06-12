@@ -9,9 +9,9 @@
             foreach (Reservation reservation in context.GetAllReservations())
             {
                 //if reservation exists in given time span
-                if ((startTime <= reservation.From && endTime >= reservation.From) || (startTime <= reservation.To && endTime >= reservation.To) || (reservation.From <= startTime && reservation.To >= endTime) || (reservation.From <= startTime && reservation.To >= endTime) || reservation.desk.Unavailable == true)
+                if ((startTime <= reservation.From && endTime >= reservation.From) || (startTime <= reservation.To && endTime >= reservation.To) || (reservation.From <= startTime && reservation.To >= endTime) || (reservation.From <= startTime && reservation.To >= endTime) || reservation.Desk.Unavailable == true)
                 {
-                    occupied.Add(reservation.desk);
+                    occupied.Add(reservation.Desk);
                 }
             }
             if (occupied.Any(a => a.Id == desk.Id))
@@ -30,9 +30,9 @@
             foreach (Reservation reservation in context.GetAllReservations())
             {
                 //if reservation exists in given time span
-                if ((startTime <= reservation.From && endTime >= reservation.From) || (startTime <= reservation.To && endTime >= reservation.To) || (reservation.From <= startTime && reservation.To >= endTime) || (reservation.From <= startTime && reservation.To >= endTime) || reservation.desk.Unavailable == true)
+                if ((startTime <= reservation.From && endTime >= reservation.From) || (startTime <= reservation.To && endTime >= reservation.To) || (reservation.From <= startTime && reservation.To >= endTime) || (reservation.From <= startTime && reservation.To >= endTime) || reservation.Desk.Unavailable == true)
                 {
-                    occupied.Add(reservation.desk);
+                    occupied.Add(reservation.Desk);
                 }
             }
             Location location = context.GetLocation(locationId);
@@ -50,7 +50,7 @@
                 //if reservation exists in given time span
                 if ((startTime <= reservation.From && endTime >= reservation.From) || (startTime <= reservation.To && endTime >= reservation.To) || (reservation.From <= startTime && reservation.To >= endTime) || (reservation.From <= startTime && reservation.To >= endTime))
                 {
-                    occupied.Add(reservation.desk);
+                    occupied.Add(reservation.Desk);
                 }
             }
             Location location = context.GetLocation(locationId);

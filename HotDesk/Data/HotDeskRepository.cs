@@ -12,19 +12,19 @@ namespace HotDesk.Models
         }
         public IEnumerable<Reservation> GetAllReservations()
         {
-            return dbContext.Reservations.Include(b => b.desk).Include(b => b.location);
+            return dbContext.Reservations.Include(b => b.Desk).Include(b => b.Location);
         }
         public IEnumerable<Reservation> GetAllReservationsAdmin()
         {
-            return dbContext.Reservations.Include(b => b.desk).Include(b => b.location).Include(a => a.user);
+            return dbContext.Reservations.Include(b => b.Desk).Include(b => b.Location).Include(a => a.User);
         }
         public Reservation GetReservation(int id)
         {
-            return dbContext.Reservations.Include(b => b.desk).Include(b => b.location).FirstOrDefault(a => a.Id == id);
+            return dbContext.Reservations.Include(b => b.Desk).Include(b => b.Location).FirstOrDefault(a => a.Id == id);
         }
         public Reservation GetReservationAdmin(int id)
         {
-            return dbContext.Reservations.Include(b => b.desk).Include(b => b.location).Include(a => a.user).FirstOrDefault(a => a.Id == id);
+            return dbContext.Reservations.Include(b => b.Desk).Include(b => b.Location).Include(a => a.User).FirstOrDefault(a => a.Id == id);
         }
         public Reservation AddReservation(Reservation reservation)
         {
@@ -110,7 +110,7 @@ namespace HotDesk.Models
             var deskFound = dbContext.Desks.Find(deskId);
             if (ReferenceEquals(reservationFound, null) || ReferenceEquals(deskFound, null))
                 throw new ArgumentException();
-            reservationFound.desk = deskFound;
+            reservationFound.Desk = deskFound;
             dbContext.SaveChanges();
             return reservationFound;
         }
