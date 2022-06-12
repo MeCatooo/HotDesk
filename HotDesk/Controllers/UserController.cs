@@ -22,7 +22,7 @@ namespace JwtApp.Controllers
         }
 
         [Authorize]
-        [HttpPatch("/set/role")]
+        [HttpPatch("set/role")]
         public IActionResult SetRole([FromBody] string role)
         {
             var user = GetCurrentUser();

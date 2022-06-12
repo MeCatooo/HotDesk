@@ -65,7 +65,7 @@ namespace HotDesk.Controllers
         }
         [Authorize(Roles = "Administrator")]
         [HttpPost]
-        [Route("/{id}/add/desk")]
+        [Route("{locationId}/add/desk")]
         public IActionResult AddDesk(int locationId, string name)
         {
             if (String.IsNullOrEmpty(name))
@@ -78,18 +78,29 @@ namespace HotDesk.Controllers
         }
         [Authorize(Roles = "Administrator")]
         [HttpPost]
-        [Route("/{id}/remove/desk/{deskId}")]
-        public IActionResult RemoveDesk(int id, int deskId)
+        [Route("remove/desk/{deskId}")]
+        public IActionResult RemoveDesk(int deskId)
         {
-            var desk = _repository.GetDesk(id);
+            var desk = _repository.GetDesk(deskId);
             if (!_repository.GetAllReservations().Any(a => a.Id == deskId))
                 return BadRequest();
             _repository.RemoveDesk(deskId);
             return Ok();
         }
         [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        [Route("update/desk/{deskId}")]
+        public IActionResult ChangeStateDesk(int deskId, [FromBody] bool state)
+        {
+            var desk = _repository.GetDesk(deskId);
+            if (!_repository.GetAllReservations().Any(a => a.Id == deskId))
+                return BadRequest("First remove all reservations from desk");
+            _repository.UpdateDeskAvaibality(deskId, state);
+            return Ok();
+        }
+        [Authorize(Roles = "Administrator")]
         [HttpDelete]
-        [Route("/remove/{id}")]
+        [Route("remove/{id}")]
         public IActionResult RemoveLocation(int id)
         {
             var location = _repository.GetLocation(id);

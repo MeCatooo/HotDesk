@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotDesk.Migrations
 {
     [DbContext(typeof(HotDeskDbContext))]
-    [Migration("20220610165004_users")]
+    [Migration("20220612091211_users")]
     partial class users
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,9 @@ namespace HotDesk.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("Unavailable")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

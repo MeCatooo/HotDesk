@@ -10,10 +10,10 @@ namespace HotDesk.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ReservatonsController : Controller
+    public class ReservationsController : Controller
     {
         private IHotDeskRepository _repository;
-        public ReservatonsController(IHotDeskRepository hotDeskRepository)
+        public ReservationsController(IHotDeskRepository hotDeskRepository)
         {
             _repository = hotDeskRepository;
         }
@@ -43,7 +43,7 @@ namespace HotDesk.Controllers
 
         // POST: ReservatonsController/Create
         [Authorize]
-        [HttpPost("/location/{id}/desk/{deskId}")]
+        [HttpPost("location/{id}/desk/{deskId}")]
         public ActionResult Create(int id, int deskId, [FromBody] TimeStamps data)
         {
             DateTime from = data.From.Date;
@@ -83,6 +83,14 @@ namespace HotDesk.Controllers
             _repository.UpdateReservationDesk(reservation.Id, newDesk.Id);
             return Ok(reservation);
         }
+        [HttpDelete]
+        [Route("remove/{id}")]
+        public ActionResult Remove(int id)
+        {
+            _repository.RemoveReservation(id);
+            return Ok();
+            
+        }
         private UserModel GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -95,5 +103,6 @@ namespace HotDesk.Controllers
             }
             return null;
         }
+
     }
 }

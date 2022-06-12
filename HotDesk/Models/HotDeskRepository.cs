@@ -16,7 +16,7 @@ namespace HotDesk.Models
         }
         public IEnumerable<Reservation> GetAllReservationsAdmin()
         {
-            return dbContext.Reservations.Include(b => b.desk).Include(b => b.location).Include(a=>a.user);
+            return dbContext.Reservations.Include(b => b.desk).Include(b => b.location).Include(a => a.user);
         }
         public Reservation GetReservation(int id)
         {
@@ -94,7 +94,7 @@ namespace HotDesk.Models
         public Location UpdateLocationName(int id, string name)
         {
             var locationFound = dbContext.Locations.Find(id);
-            if(ReferenceEquals(locationFound,null))
+            if (ReferenceEquals(locationFound, null))
                 throw new ArgumentException();
             locationFound.Name = name;
             dbContext.SaveChanges();
@@ -143,6 +143,16 @@ namespace HotDesk.Models
             dbContext.SaveChanges();
             return location;
         }
+
+        public Desk UpdateDeskAvaibality(int id, bool state)
+        {
+            var desk = dbContext.Desks.Find(id);
+            if (ReferenceEquals(desk, null))
+                throw new ArgumentException();
+            desk.Unavailable = state;
+            dbContext.SaveChanges();
+            return desk;
+        }
     }
     public interface IHotDeskRepository
     {
@@ -163,6 +173,7 @@ namespace HotDesk.Models
         public void RemoveLocation(int id);
         public void RemoveReservation(int id);
         public Desk UpdateDeskName(int id, string name);
+        public Desk UpdateDeskAvaibality(int id, bool state);
         public Location UpdateLocationName(int id, string name);
         public Reservation UpdateReservationDesk(int id, int deskId);
         public UserModel UpdateUser(string username, string role);
