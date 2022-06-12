@@ -56,7 +56,7 @@ namespace JwtApp.Controllers
         }
         private string Generate(UserModel user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4"));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTConsts.Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -65,8 +65,8 @@ namespace JwtApp.Controllers
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var token = new JwtSecurityToken("https://localhost:44381/",
-              "https://localhost:44381/",
+            var token = new JwtSecurityToken(JWTConsts.Issuer,
+              JWTConsts.Audience,
               claims,
               expires: DateTime.Now.AddMinutes(15),
               signingCredentials: credentials);
@@ -76,7 +76,6 @@ namespace JwtApp.Controllers
 
         private UserModel Authenticate(UserLogin userLogin)
         {
-            //var currentUser = UserConstants.Users.FirstOrDefault(o => o.Username.ToLower() == userLogin.Username.ToLower() && o.Password == userLogin.Password);
             var currentUser = _repository.GetUser(userLogin);
 
             if (currentUser != null)
@@ -85,6 +84,12 @@ namespace JwtApp.Controllers
             }
 
             return null;
+        }
+        public static class JWTConsts
+        {
+            public const string Issuer = "https://localhost:44381/";
+            public const string Audience = "https://localhost:44381/";
+            public const string Key = "DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4";
         }
     }
 }

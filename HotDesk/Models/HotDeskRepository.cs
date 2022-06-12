@@ -120,14 +120,16 @@ namespace HotDesk.Models
             return dbContext.users.FirstOrDefault(o => o.Username.ToLower() == userLogin.Username.ToLower());
         }
 
-        public void AddUser(UserLogin user)
+        public UserModel AddUser(UserLogin user)
         {
             if (dbContext.users.Any(a => a.Username == user.Username))
             {
                 throw new Exception("User already exists");
             }
-            dbContext.users.Add(new UserModel() { Username = user.Username, Password = user.Password, Role = "User" });
+            var userCreated = new UserModel() { Username = user.Username, Password = user.Password, Role = "User" };
+            dbContext.users.Add(userCreated);
             dbContext.SaveChanges();
+            return userCreated;
         }
 
         public UserModel UpdateUser(string username, string role)
@@ -171,7 +173,7 @@ namespace HotDesk.Models
         public Reservation AddReservation(Reservation reservation);
         public Desk AddDesk(Desk desk);
         public Location AddLocation(Location location);
-        public void AddUser(UserLogin user);
+        public UserModel AddUser(UserLogin user);
         public void RemoveDesk(int id);
         public void RemoveLocation(int id);
         public void RemoveReservation(int id);
